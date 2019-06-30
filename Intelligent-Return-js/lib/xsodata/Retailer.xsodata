@@ -1,0 +1,6 @@
+service { 
+	"Intelligent-Returns.Intelligent-Return-HDB::Tables.RetailerData" as "Retailer"
+    key("CustomerID");
+    "Intelligent-Returns.Intelligent-Return-HDB::Tables.SegmentInfo" as "Segment"
+    key("SegmentID");
+}

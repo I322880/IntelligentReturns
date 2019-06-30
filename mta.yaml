@@ -1,0 +1,30 @@
+ID: Intelligent-Returns
+_schema-version: '2.1'
+parameters:
+  deploy_mode: html5-repo
+version: 0.0.1
+modules:
+  - name: Intelligent-Return-HDB
+    type: hdb
+    path: Intelligent-Return-HDB
+    requires:
+      - name: hdi_Intelligent-Return-HDB
+  - name: Intelligent-Return-js
+    type: nodejs
+    path: Intelligent-Return-js
+    provides:
+      - name: Intelligent-Return-js_api
+        properties:
+          url: '${default-url}'
+    requires:
+      - name: Intelligent-Return-HDB
+      - name: hdi_Intelligent-Return-HDB
+      - name: Intelligent-Return-js_api
+resources:
+  - name: hdi_Intelligent-Return-HDB
+    properties:
+      config:
+        schema: Intelligent-Return
+        database_id: b2bd0acf-0f09-458b-875a-c3ce4437fb59
+      hdi-container-name: '${service-name}'
+    type: com.sap.xs.hdi-container

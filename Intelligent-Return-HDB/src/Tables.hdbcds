@@ -1,0 +1,70 @@
+namespace "Intelligent-Returns"."Intelligent-Return-HDB";
+
+@OData.publish : true
+context Tables {
+
+    /*@@layout{"layoutInfo":{}}*/
+    entity RetailerData {
+        key CustomerID   : String(40) not null;
+        key OrderID      : String(40) not null;
+            ProductID    : String(40);
+            ReturnFlag   : Integer;
+            ProductPrice : DecimalFloat;
+            LogisticCost : DecimalFloat;
+            OrderDate    : LocalDate;
+            ReturnDate   : LocalDate;
+            OrderValue   : Decimal(10, 2);
+            LoyaltyScore : Integer;
+    };
+
+    /*@@layout{"layoutInfo":{}}*/
+    entity KClusteringInput {
+        key CustomerID    : String(40);
+            OrderCount    : Integer;
+            ReturnCount   : Integer;
+            CustomerValue : DecimalFloat;
+    };
+
+    /*@@layout{"layoutInfo":{}}*/
+    entity ReturnSegmentDetails {
+        key SegmentID         : Integer;
+            MeanCustomerValue : DecimalFloat;
+            MeanReturnCount   : DecimalFloat;
+            MeanOrderCount    : DecimalFloat;
+    };
+
+    /*@@layout{"layoutInfo":{}}*/
+    entity SegmentCustomerMap {
+        key SegmentID     : Integer;
+        key CustomerID    : String(40);
+            association_1 : association[1, 1..1] to Tables.ReturnSegmentDetails { SegmentID };
+            association_2 : association[1, 1..1] to Tables.RetailerData { CustomerID };
+    };
+
+    view SegmentInfo as
+        select from SegmentCustomerMap
+        {
+            SegmentID,
+            count(CustomerID) as NumberOfCustomer
+        }
+        group by
+            SegmentID;
+
+    view KmeansInput as
+        select from RetailerData
+        {
+            CustomerID,
+            count(distinct OrderID) as OrderCount,
+            count(distinct
+            case
+                when ReturnFlag = 1 then "OrderID"
+            end)                    as ReturnCount,
+            sum(
+            case
+                when ReturnFlag = 0 then OrderValue
+                when ReturnFlag = 1 then 0 - LogisticCost
+            end)                    as CustomerValue
+        } group by CustomerID;
+}
+
+/*@@layout{"layoutInfo":{"x":-320,"y":-1.5}}*/
