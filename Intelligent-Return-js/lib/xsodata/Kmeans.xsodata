@@ -1,0 +1,4 @@
+service { 
+    "Intelligent-Returns.Intelligent-Return-HDB::Tables.KmeansInput" as "Kmeans"
+    key("CustomerID");
+}

@@ -65,6 +65,16 @@ context Tables {
                 when ReturnFlag = 1 then 0 - LogisticCost
             end)                    as CustomerValue
         } group by CustomerID;
+        
+        view summary as select from RetailerData
+        {
+        	count(distinct CustomerID) as Customers,
+        	count(distinct
+            case
+                when ReturnFlag = 1 then "OrderID"
+            end)                    as ReturnCount
+            
+        };
 }
 
 /*@@layout{"layoutInfo":{"x":-320,"y":-1.5}}*/
